@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>CureX – Lung Disease Detection</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <div class="container">
+        <h1>CureX</h1>
+        <p class="subtitle">AI-Powered Lung Disease Detection System</p>
+
+        <div class="content">
+
+            <!-- LEFT SECTION -->
+            <div class="upload-section">
+                <form id="uploadForm">
+                    <input type="file" id="imageInput" accept="image/png, image/jpeg" required />
+                    <button type="submit">Detect Disease</button>
+                </form>
+
+                <div id="preview"></div>
+
+                <!-- MODEL RESULT -->
+                <div id="result" class="result-card hidden">
+                    <h2>🩺 Diagnosis Result</h2>
+
+                    <div class="summary">
+                        <p><strong>Disease:</strong> <span id="disease"></span></p>
+                        <p><strong>Confidence:</strong> <span id="confidence"></span></p>
+                        <p><strong>Severity:</strong> <span id="severity"></span></p>
+                    </div>
+                </div>
+
+                <p class="note">
+                    ⚠️ This is an AI-assisted system. Please consult a medical professional.
+                </p>
+            </div>
+
+            <!-- RIGHT SECTION -->
+            <div class="results-section">
+                <h2>Diagnosis Results from Gemini</h2>
+                <div id="gemini-results">
+                    <p class="placeholder">No results available yet.</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
