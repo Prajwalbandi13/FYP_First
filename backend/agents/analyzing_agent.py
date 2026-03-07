@@ -1,6 +1,10 @@
 import tensorflow as tf
 import numpy as np
 import os
+import cv2
+import base64
+
+from model.gradcam import make_gradcam_heatmap, overlay_heatmap
 
 
 class AnalyzingAgent:
@@ -8,6 +12,7 @@ class AnalyzingAgent:
     Analyzing Agent:
     - Loads trained CNN model
     - Performs inference on preprocessed images
+    - Generates Grad-CAM heatmap
     """
 
     def __init__(self):
@@ -21,7 +26,7 @@ class AnalyzingAgent:
 
         self.model = tf.keras.models.load_model(model_path)
 
-        # MUST match training directory order
+        # MUST match training order
         self.class_labels = [
             "Bacterial Pneumonia",
             "Corona Virus Disease",
@@ -30,15 +35,42 @@ class AnalyzingAgent:
             "Viral Pneumonia"
         ]
 
+        # 🔥 IMPORTANT: Update after printing model layers
+        self.last_conv_layer = "Conv_1"
+
+    # ---------------------------------------------------
+    # MAIN ANALYSIS
+    # ---------------------------------------------------
     def analyze(self, image):
-        """
-        Input  : Preprocessed image tensor (1, 224, 224, 3)
-        Output : Dict of class probabilities
-        """
         predictions = self.model.predict(image)[0]
 
-        result = {}
+        probabilities = {}
         for i, label in enumerate(self.class_labels):
-            result[label] = float(predictions[i])
+            probabilities[label] = float(predictions[i])
 
-        return result
+        heatmap = self.generate_heatmap(image)
+
+        return {
+            "probabilities": probabilities,
+            "heatmap": heatmap
+        }
+
+    # ---------------------------------------------------
+    # GRAD-CAM HEATMAP
+    # ---------------------------------------------------
+    def generate_heatmap(self, image):
+        try:
+            heatmap = make_gradcam_heatmap(
+                image,
+                self.model,
+                last_conv_layer_name=self.last_conv_layer
+            )
+
+            overlay = overlay_heatmap(image, heatmap)
+
+            _, buffer = cv2.imencode(".jpg", overlay)
+            return base64.b64encode(buffer).decode("utf-8")
+
+        except Exception as e:
+            print("Heatmap generation failed:", e)
+            return None

@@ -6,8 +6,8 @@ from google import genai
 class ActionAgent:
     """
     Action Agent:
-    - Gemini used for educational explanations
-    - Fully fault-tolerant (quota-safe)
+    - Generates user-friendly response
+    - Adds Gemini explanation
     """
 
     def __init__(self):
@@ -25,24 +25,26 @@ class ActionAgent:
         disease = decision.get("Predicted Disease", "Unknown")
         confidence = decision.get("Confidence (%)", "N/A")
         severity = decision.get("Severity Level", "N/A")
+        heatmap = decision.get("heatmap")
 
-        # Default fallback (ALWAYS works)
+        # ----------------------------
+        # DEFAULT EXPLANATION
+        # ----------------------------
         explanation = (
             f"Possible Symptoms: Symptoms vary depending on severity of {disease}.\n"
             "Precautions: Avoid smoking, maintain hygiene, stay hydrated.\n"
             "Recommended Next Diagnostic Step: Consult a healthcare professional."
         )
 
-        # Try Gemini (optional)
+        # ----------------------------
+        # GEMINI (OPTIONAL)
+        # ----------------------------
         if self.client:
             try:
                 prompt = f"""
 Provide GENERAL EDUCATIONAL information about {disease}.
-
-Rules:
-- No diagnosis
-- No treatment or medication
-- Simple language
+No diagnosis or treatment.
+Simple language.
 
 Format:
 Possible Symptoms:
@@ -58,15 +60,18 @@ Recommended Next Diagnostic Step:
                     explanation = response.text.strip()
 
             except Exception as e:
-                # Quota errors land here safely
-                print("Gemini unavailable (quota or rate limit):", e)
+                print("Gemini unavailable:", e)
 
+        # ----------------------------
+        # FINAL RESPONSE
+        # ----------------------------
         return {
             "Timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             "Predicted Disease": disease,
             "Confidence": confidence,
             "Severity (AI-estimated)": severity,
             "Medical Guidance": explanation,
+            "heatmap": heatmap,   # 🔥 FINAL OUTPUT
             "Disclaimer": (
                 "This is an AI-assisted educational tool. "
                 "It does not replace professional medical advice."

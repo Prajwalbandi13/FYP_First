@@ -21,27 +21,52 @@
                     <button type="submit">Detect Disease</button>
                 </form>
 
-                <div id="preview"></div>
+                <!-- IMAGE PREVIEW -->
+                <div id="preview" class="preview-box"></div>
 
-                <!-- MODEL RESULT -->
+                <!-- HEATMAP BUTTON -->
+                <button id="toggleHeatmap" class="hidden heatmap-btn">
+                    🔥 Show AI Heatmap
+                </button>
+
+                <!-- HEATMAP IMAGE -->
+                <div id="heatmapContainer" class="hidden heatmap-box">
+                    <h3>AI Attention Map</h3>
+                    <img id="heatmapImage" />
+                </div>
+
+                <!-- RESULT CARD -->
                 <div id="result" class="result-card hidden">
                     <h2>🩺 Diagnosis Result</h2>
 
-                    <div class="summary">
-                        <p><strong>Disease:</strong> <span id="disease"></span></p>
-                        <p><strong>Confidence:</strong> <span id="confidence"></span></p>
-                        <p><strong>Severity:</strong> <span id="severity"></span></p>
+                    <div class="result-grid">
+                        <div class="result-item">
+                            <span class="label">Disease</span>
+                            <span class="value" id="disease"></span>
+                        </div>
+
+                        <div class="result-item">
+                            <span class="label">Confidence</span>
+                            <span class="value" id="confidence"></span>
+                        </div>
+
+                        <div class="result-item">
+                            <span class="label">Severity</span>
+                            <span class="value" id="severity"></span>
+                        </div>
                     </div>
                 </div>
 
-                <p class="note">
-                    ⚠️ This is an AI-assisted system. Please consult a medical professional.
-                </p>
+                <!-- PDF BUTTON -->
+                <button id="downloadReport" class="hidden pdf-btn">
+                    📄 Download Medical Report
+                </button>
+
             </div>
 
             <!-- RIGHT SECTION -->
             <div class="results-section">
-                <h2>Diagnosis Results from Gemini</h2>
+                <h2>Diagnosis Results</h2>
                 <div id="gemini-results">
                     <p class="placeholder">No results available yet.</p>
                 </div>
@@ -50,6 +75,10 @@
         </div>
     </div>
 
+    <!-- jsPDF CDN (REQUIRED for PDF export) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <!-- Your Script -->
     <script src="script.js"></script>
 </body>
 

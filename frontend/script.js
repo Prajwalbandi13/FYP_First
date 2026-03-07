@@ -9,6 +9,12 @@ const severitySpan = document.getElementById("severity");
 
 const geminiResultsDiv = document.getElementById("gemini-results");
 
+// NEW UI ELEMENTS
+const heatmapBtn = document.getElementById("toggleHeatmap");
+const heatmapContainer = document.getElementById("heatmapContainer");
+const heatmapImg = document.getElementById("heatmapImage");
+const pdfBtn = document.getElementById("downloadReport");
+
 form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -17,6 +23,11 @@ form.addEventListener("submit", async (e) => {
         alert("Please select an image");
         return;
     }
+
+    /* ---------------- RESET UI ---------------- */
+    heatmapBtn.classList.add("hidden");
+    heatmapContainer.classList.add("hidden");
+    pdfBtn.classList.add("hidden");
 
     /* ---------------- IMAGE PREVIEW ---------------- */
     previewDiv.innerHTML = "";
@@ -54,6 +65,15 @@ form.addEventListener("submit", async (e) => {
 
         resultDiv.classList.remove("hidden");
 
+        /* ---------------- HEATMAP SUPPORT ---------------- */
+        if (data.heatmap) {
+            heatmapBtn.classList.remove("hidden");
+            heatmapImg.src = `data:image/jpeg;base64,${data.heatmap}`;
+        }
+
+        /* ---------------- SHOW PDF BUTTON ---------------- */
+        pdfBtn.classList.remove("hidden");
+
         /* ---------------- RIGHT PANEL (GEMINI) ---------------- */
         const guidanceText = data["Medical Guidance"];
 
@@ -68,6 +88,44 @@ form.addEventListener("submit", async (e) => {
         console.error("Fetch failed:", error);
         alert("Error connecting to backend");
     }
+});
+
+/* ---------------- HEATMAP TOGGLE ---------------- */
+heatmapBtn.addEventListener("click", () => {
+    heatmapContainer.classList.toggle("hidden");
+
+    heatmapBtn.textContent = heatmapContainer.classList.contains("hidden")
+        ? "🔥 Show AI Heatmap"
+        : "❌ Hide AI Heatmap";
+});
+
+/* ---------------- PDF GENERATOR ---------------- */
+pdfBtn.addEventListener("click", () => {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    const disease = diseaseSpan.textContent;
+    const confidence = confidenceSpan.textContent;
+    const severity = severitySpan.textContent;
+
+    doc.setFontSize(18);
+    doc.text("CureX AI Medical Report", 20, 20);
+
+    doc.setFontSize(12);
+    doc.text(`Disease: ${disease}`, 20, 40);
+    doc.text(`Confidence: ${confidence}`, 20, 50);
+    doc.text(`Severity: ${severity}`, 20, 60);
+
+    doc.text(`Generated: ${new Date().toLocaleString()}`, 20, 80);
+
+    doc.setFontSize(10);
+    doc.text(
+        "Disclaimer: AI-assisted tool. Consult a medical professional.",
+        20,
+        100
+    );
+
+    doc.save("CureX_Report.pdf");
 });
 
 /* ---------------- FORMAT GEMINI TEXT ---------------- */

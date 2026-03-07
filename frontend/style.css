@@ -1,96 +1,202 @@
+* {
+    box-sizing: border-box;
+}
+
 body {
-    font-family: Arial, sans-serif;
-    background: #f4f6f9;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #eef2f7, #f8fbff);
     margin: 0;
     padding: 0;
 }
 
+/* MAIN CONTAINER */
 .container {
     max-width: 1200px;
-    margin: 50px auto;
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    text-align: center;
+    margin: 40px auto;
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 14px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
 }
 
+/* HEADER */
 h1 {
+    text-align: center;
     margin-bottom: 5px;
     color: #2c3e50;
 }
 
 .subtitle {
+    text-align: center;
     font-size: 14px;
-    color: #555;
-    margin-bottom: 20px;
+    color: #777;
+    margin-bottom: 30px;
 }
 
+/* LAYOUT */
 .content {
     display: flex;
-    justify-content: space-between;
-    gap: 20px;
+    gap: 25px;
 }
 
-.upload-section {
+/* LEFT + RIGHT CARDS */
+.upload-section,
+.results-section {
     flex: 1;
-    padding: 20px;
-    background: #ecf9f6;
-    border-radius: 8px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.06);
+}
+
+/* COLORS */
+.upload-section {
+    background: #f2fffb;
+    border: 1px solid #d2f5ec;
 }
 
 .results-section {
-    flex: 1;
-    padding: 20px;
-    background: #fce4ec;
-    border-radius: 8px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    background: #fff3f6;
+    border: 1px solid #ffd6df;
 }
 
+/* FILE INPUT */
 input[type="file"] {
+    width: 100%;
+    padding: 12px;
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    background: #fafafa;
     margin-bottom: 15px;
-    padding: 10px;
 }
 
+/* BUTTON */
 button {
     width: 100%;
-    padding: 10px;
-    background: #1abc9c;
+    padding: 12px;
+    background: linear-gradient(135deg, #1abc9c, #16a085);
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
     font-size: 16px;
+    font-weight: 600;
     cursor: pointer;
+    transition: 0.3s;
 }
 
 button:hover {
-    background: #16a085;
+    transform: translateY(-1px);
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* PREVIEW */
+.preview-box {
+    margin-top: 20px;
+    text-align: center;
 }
 
 #preview img {
     max-width: 100%;
-    margin-top: 15px;
-    border-radius: 5px;
+    max-height: 280px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
 }
 
+/* RESULT CARD */
 .result-card {
-    margin-top: 20px;
-    padding: 15px;
-    background: #ecf9f6;
-    border-radius: 8px;
+    margin-top: 25px;
+    padding: 20px;
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #eaeaea;
+    text-align: center;
 }
 
+.result-card h2 {
+    margin-bottom: 15px;
+}
+
+/* RESULT GRID */
+.result-grid {
+    display: flex;
+    justify-content: space-around;
+    gap: 10px;
+}
+
+.result-item {
+    background: #f7f9fb;
+    padding: 12px 16px;
+    border-radius: 10px;
+    min-width: 100px;
+}
+
+.label {
+    display: block;
+    font-size: 12px;
+    color: #888;
+}
+
+.value {
+    font-weight: bold;
+    font-size: 16px;
+    color: #2c3e50;
+}
+
+/* RIGHT PANEL TEXT */
+.results-section h2 {
+    margin-top: 0;
+    text-align: center;
+}
+
+.placeholder {
+    text-align: center;
+    color: #999;
+    margin-top: 50px;
+}
+
+/* HIDDEN */
 .hidden {
     display: none;
 }
 
-.note {
-    font-size: 12px;
-    color: #777;
-    margin-top: 15px;
+/* RESPONSIVE */
+@media (max-width: 900px) {
+    .content {
+        flex-direction: column;
+    }
+
+    .result-grid {
+        flex-direction: column;
+    }
 }
 
-.summary p {
-    margin: 5px 0;
+/* ================= HEATMAP UI ================= */
+
+.heatmap-btn {
+    margin-top: 15px;
+    background: linear-gradient(135deg, #ff6b6b, #ff3b3b);
+}
+
+.heatmap-box {
+    margin-top: 20px;
+    text-align: center;
+}
+
+#heatmapImage {
+    max-width: 100%;
+    max-height: 320px;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+}
+
+/* ================= PDF BUTTON ================= */
+
+.pdf-btn {
+    margin-top: 15px;
+    background: linear-gradient(135deg, #4e73df, #224abe);
+}
+
+/* Smooth fade animation */
+.heatmap-box,
+.heatmap-btn {
+    transition: all 0.3s ease;
 }

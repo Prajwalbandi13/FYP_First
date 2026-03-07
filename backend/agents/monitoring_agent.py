@@ -3,31 +3,21 @@ from PIL import Image
 import io
 
 class MonitoringAgent:
-    """
-    Monitoring Agent:
-    - Validates input image
-    - Performs preprocessing
-    - Prepares image for CNN inference
-    """
 
-    def __init__(self, img_size=(224, 224)):
+    def __init__(self, img_size=(256, 256)):
         self.img_size = img_size
-        self.allowed_types = ["image/jpeg", "image/png"]
+        self.allowed_types = ["image/jpeg", "image/jpg", "image/png"]
 
     def process(self, file):
-        """
-        Input  : Uploaded image file
-        Output : Preprocessed NumPy array ready for CNN
-        """
 
         # ----------------------------
-        # 1. FILE TYPE VALIDATION
+        # FILE TYPE VALIDATION
         # ----------------------------
-        if file.content_type not in self.allowed_types:
-            raise ValueError("Invalid file type. Only JPG and PNG are supported.")
+        if file.content_type not in self.allowed_types and not file.filename.lower().endswith((".jpg", ".jpeg", ".png")):
+            raise ValueError("Invalid file type. Only JPG and PNG images are supported.")
 
         # ----------------------------
-        # 2. READ IMAGE BYTES SAFELY
+        # READ IMAGE
         # ----------------------------
         image_bytes = file.file.read()
 
@@ -35,7 +25,7 @@ class MonitoringAgent:
             raise ValueError("Empty image file received.")
 
         # ----------------------------
-        # 3. IMAGE DECODING
+        # DECODE IMAGE
         # ----------------------------
         try:
             image = Image.open(io.BytesIO(image_bytes))
@@ -44,25 +34,26 @@ class MonitoringAgent:
             raise ValueError("Corrupted or unsupported image file.")
 
         # ----------------------------
-        # 4. BASIC IMAGE QUALITY CHECK
+        # RESOLUTION CHECK
         # ----------------------------
         width, height = image.size
+
         if width < 100 or height < 100:
             raise ValueError("Image resolution too low for medical analysis.")
 
         # ----------------------------
-        # 5. RESIZE (MODEL INPUT SIZE)
+        # RESIZE
         # ----------------------------
         image = image.resize(self.img_size)
 
         # ----------------------------
-        # 6. NORMALIZATION
+        # NORMALIZATION (MobileNetV2)
         # ----------------------------
         image_array = np.array(image, dtype=np.float32)
-        image_array /= 255.0
+        image_array = (image_array / 127.5) - 1
 
         # ----------------------------
-        # 7. BATCH DIMENSION
+        # BATCH DIMENSION
         # ----------------------------
         image_array = np.expand_dims(image_array, axis=0)
 
