@@ -1,4 +1,4 @@
-from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi import FastAPI, UploadFile, File, Form, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
 # 🔹 LOAD ENV VARIABLES (.env)
@@ -59,7 +59,11 @@ def root():
 # MAIN PREDICTION ENDPOINT
 # ----------------------------
 @app.post("/detect")
-async def detect_lung_disease(file: UploadFile = File(...)):
+async def detect_lung_disease(
+    file: UploadFile = File(...),
+    age: int = Form(...),
+    previous_disease: str = Form("")
+):
     """
     Pipeline:
     1. Monitoring Agent  -> image validation & preprocessing
@@ -79,7 +83,11 @@ async def detect_lung_disease(file: UploadFile = File(...)):
         decision = decision_agent.decide(predictions)
 
         # 4️⃣ Action Agent
-        response = action_agent.act(decision)
+        patient_context = {
+            "age": age,
+            "previous_disease": previous_disease
+        }
+        response = action_agent.act(decision, patient_context)
 
         return response
 
